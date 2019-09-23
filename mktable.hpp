@@ -5,11 +5,12 @@
 #include <string>
 
 using std::string;
+using file = std::fstream;
 
 string GenerateHeader(string header_line);
 string GenerateLine(string line);
 string GenerateFooter();
 
-string ReadLineFromFile(fstream &file_handler);
-fstream OpenFile(string file_name);
+string ReadLineFromFile(file &file_handler);
+file OpenFile(string file_name);
 bool CloseFile(string &file_handler);
