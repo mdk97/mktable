@@ -7,7 +7,7 @@ file OpenFile(string file_name)
     return(file_handler);
 }
 
-bool CloseFile(string &file_handler);
+bool CloseFile(file &file_handler)
 {
     if (file_handler.is_open())
         file_handler.close();
@@ -24,11 +24,11 @@ string ReadLineFromFile(file &file_handler)
         return("");
     }
     string line;
-    line << file_handler;
+    file_handler >> line;
     return(line);
 }
 
-uint ParseFile(string header_line)
+uint GetColumnCount(string header_line)
 {
     uint counter = 0;
     for (char a : header_line)
@@ -39,16 +39,38 @@ uint ParseFile(string header_line)
     return(counter);
 }
 
+vector<string> StringSplit(string str, char delimiter)
+{
+    string temp("");
+    vector<string> split_string;
+    for (char c : str)
+    {
+        if (c != delimiter)
+            temp.push_back(c);
+        else
+        {
+            split_string.push_back(temp);
+            temp.clear();
+        }
+    }
+    return(split_string);
+}
+
 string GenerateHeader(string header_line)
 {
     string header("+");
-    for (int i = 1; i < header_line.length(); i++)
+    for (int i = 1; i < COLUMN_SIZE; i++)
         header.append("-");
     header.append("+");
     return(header);
 }
 
-string GenerateLine(string line, uint columns)
+string GenerateLine(vector<string> line, uint columns)
 {
     string formatted_line("|");
+    for (uint i = 0; i < columns; i++)
+    {
+        formatted_line.append(line[i]);
+
+    }
 }
