@@ -8,7 +8,7 @@ using std::string;
 using file = std::fstream;
 
 string GenerateHeader(string header_line);
-string GenerateLine(string line);
+string GenerateLine(string line, uint columns);
 string GenerateFooter();
 
 string ReadLineFromFile(file &file_handler);
