@@ -1,4 +1,5 @@
 #include "mktable.hpp"
+#include "rainbow/C++/rainbow.hpp"
 
 using std::cout;
 using std::endl;
@@ -31,12 +32,12 @@ string ReadLineFromFile(file &file_handler)
     return(line);
 }
 
-uint GetColumnCount(string header_line)
+uint GetColumnCount(string header_line, char delimiter)
 {
     uint counter = 1;
     for (char a : header_line)
     {
-       if (a == ' ')
+       if (a == delimiter)
            counter++;
     }
     return(counter);
@@ -85,10 +86,10 @@ uint GetLongestStringInFile(file &file_handler, char delimiter)
     return(longest);
 }
 
-string GenerateDivision(string header_line, uint column_size)
+string GenerateDivision(string header_line, uint column_size, char delimiter)
 {
     string header;
-    auto size = (column_size + 1)* GetColumnCount(header_line);
+    auto size = (column_size + 1)* GetColumnCount(header_line, delimiter);
     for (int i = 0; i < size; i++)
     {
         if (i % (column_size + 1) != 0)
@@ -124,20 +125,24 @@ string GenerateLine(vector<string> line, uint columns, uint column_size)
 void WriteTable(file &file_handler, char delimiter, uint column_size)
 {
     string line = ReadLineFromFile(file_handler);
-    string division = GenerateDivision(line, column_size);
-    uint columns = GetColumnCount(line);
+    string division = GenerateDivision(line, column_size, delimiter);
+    uint columns = GetColumnCount(line, delimiter);
     vector<string> split_line = StringSplit(line, delimiter);
 
-    cout << division << endl;
-    cout << GenerateLine(split_line, columns, column_size) << endl;
+    print_colored(division, GREEN, BG_DEFAULT);
+    cout << endl;
+    print_colored(GenerateLine(split_line, columns, column_size), GREEN, BG_DEFAULT);
+    cout << endl;
 
     while (true)
     {
-        cout << division << endl;
+        print_colored(division, CYAN, BG_DEFAULT);
+        cout << endl;
         line = ReadLineFromFile(file_handler);
         if (file_handler.eof())
             return;
-        cout << GenerateLine(StringSplit(line, delimiter), columns, column_size) << endl;
+        print_colored(GenerateLine(StringSplit(line, delimiter), columns, column_size), CYAN, BG_DEFAULT);
+        cout << endl;
     }
 }
 

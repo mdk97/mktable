@@ -1,0 +1,3 @@
+[submodule "rainbow"]
+	path = rainbow
+	url = https://github.com/mdk97/Rainbow
