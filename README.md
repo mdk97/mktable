@@ -69,3 +69,6 @@ For this file, mktable will generate the following table:
 |      Ruth   |       F     |       28    |       65    |      131    |
 +-------------+-------------+-------------+-------------+-------------+
 ```
+
+## Important Notes
+I use the [Rainbow](https://github.com/mdk97/Rainbow) repository to print colored text with the tables, so don't forget to `git submodule update --init`
