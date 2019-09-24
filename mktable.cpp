@@ -27,13 +27,13 @@ string ReadLineFromFile(file &file_handler)
         return("");
     }
     string line;
-    file_handler >> line;
+    std::getline(file_handler, line);
     return(line);
 }
 
 uint GetColumnCount(string header_line)
 {
-    uint counter = 0;
+    uint counter = 1;
     for (char a : header_line)
     {
        if (a == ' ')
@@ -44,12 +44,15 @@ uint GetColumnCount(string header_line)
 
 vector<string> StringSplit(string str, char delimiter)
 {
+    str.push_back(delimiter);
     string temp("");
     vector<string> split_string;
     for (char c : str)
     {
         if (c != delimiter)
+        {
             temp.push_back(c);
+        }
         else
         {
             split_string.push_back(temp);
@@ -71,7 +74,7 @@ uint GetLongestStringInFile(file &file_handler, char delimiter)
     while (not file_handler.eof())
     {
         string temp;
-        file_handler >> temp;
+        temp = ReadLineFromFile(file_handler);
         vector<string> line = StringSplit(temp, delimiter);
         for (string s : line)
         {
@@ -84,10 +87,11 @@ uint GetLongestStringInFile(file &file_handler, char delimiter)
 
 string GenerateDivision(string header_line, uint column_size)
 {
-    string header("+");
-    for (int i = 1; i < column_size * GetColumnCount(header_line); i++)
+    string header;
+    auto size = (column_size + 1)* GetColumnCount(header_line);
+    for (int i = 0; i < size; i++)
     {
-        if (i % column_size != 0)
+        if (i % (column_size + 1) != 0)
             header.push_back('-');
         else
             header.push_back('+');
@@ -102,8 +106,13 @@ string GenerateLine(vector<string> line, uint columns, uint column_size)
     string formatted_line("|");
     for (uint i = 0; i < columns; i++)
     {
+        auto space_length = (((column_size + columns) - line[i].length()) / 2) - 1;
+        for (auto j = 0; j < space_length and line[i].length() < column_size; j++)
+        {
+            formatted_line.push_back(' ');
+        }
         formatted_line.append(line[i]);
-        for (auto j = line[i].length(); j < column_size; j++)
+        for (auto j = space_length + line[i].length(); j < column_size; j++)
         {
             formatted_line.push_back(' ');
         }
@@ -117,9 +126,10 @@ void WriteTable(file &file_handler, char delimiter, uint column_size)
     string line = ReadLineFromFile(file_handler);
     string division = GenerateDivision(line, column_size);
     uint columns = GetColumnCount(line);
+    vector<string> split_line = StringSplit(line, delimiter);
 
     cout << division << endl;
-    cout << GenerateLine(StringSplit(line, delimiter), columns, column_size);
+    cout << GenerateLine(split_line, columns, column_size) << endl;
 
     while (true)
     {
@@ -127,7 +137,7 @@ void WriteTable(file &file_handler, char delimiter, uint column_size)
         line = ReadLineFromFile(file_handler);
         if (file_handler.eof())
             return;
-        cout << GenerateLine(StringSplit(line, delimiter), columns, column_size);
+        cout << GenerateLine(StringSplit(line, delimiter), columns, column_size) << endl;
     }
 }
 
