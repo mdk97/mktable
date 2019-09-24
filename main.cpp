@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         std::cerr << e.what() << '\n';
     }
 
-    uint column_size = GetLongestStringInFile(fh, ';');
+    uint column_size = GetLongestStringInFile(fh, ';') + 2;
     CloseFile(fh);
     
     try
