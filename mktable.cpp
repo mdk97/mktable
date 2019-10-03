@@ -107,7 +107,7 @@ string GenerateLine(vector<string> line, uint columns, uint column_size)
     string formatted_line("|");
     for (uint i = 0; i < columns; i++)
     {
-        auto space_length = ((column_size - line[i].length()) / 2) - 1;
+        auto space_length = ((column_size - line[i].length()) / 2) - 2;
         for (auto j = 0; j < space_length and line[i].length() < column_size; j++)
         {
             formatted_line.push_back(' ');
