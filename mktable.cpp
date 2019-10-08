@@ -1,5 +1,6 @@
 #include "mktable.hpp"
 #include "rainbow/C++/rainbow.hpp"
+#include <cmath>
 
 using std::cout;
 using std::endl;
@@ -108,12 +109,13 @@ string GenerateLine(vector<string> line, uint columns, uint column_size)
     for (uint i = 0; i < columns; i++)
     {
         auto space_length = 2 + (column_size - line[i].length());
-        for (auto j = 0; j < space_length and line[i].length() < column_size; j++)
+        auto j = 0;
+        for (; j < ceil(space_length / 2); j++)
         {
             formatted_line.push_back(' ');
         }
         formatted_line.append(line[i]);
-        for (auto j = space_length + line[i].length(); j < column_size; j++)
+        for (; j < floor(column_size / 2); j++)
         {
             formatted_line.push_back(' ');
         }
