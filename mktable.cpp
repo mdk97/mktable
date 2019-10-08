@@ -110,12 +110,12 @@ string GenerateLine(vector<string> line, uint columns, uint column_size)
     {
         auto space_length = 2 + (column_size - line[i].length());
         auto j = 0;
-        for (; j < ceil(space_length / 2); j++)
+        for (; j < ceil((double)space_length / 2.0); j++)
         {
             formatted_line.push_back(' ');
         }
         formatted_line.append(line[i]);
-        for (; j < floor(column_size / 2); j++)
+        for (; j < floor((double)column_size / 2.0); j++)
         {
             formatted_line.push_back(' ');
         }
