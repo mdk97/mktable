@@ -12,13 +12,10 @@ file OpenFile(string file_name)
     return(file_handler);
 }
 
-bool CloseFile(file &file_handler)
+void CloseFile(file &file_handler)
 {
     if (file_handler.is_open())
         file_handler.close();
-    else
-        return(false);
-    return(true);
 }
 
 string ReadLineFromFile(file &file_handler)
@@ -90,10 +87,10 @@ uint GetLongestStringInFile(file &file_handler, char delimiter)
 string GenerateDivision(string header_line, uint column_size, char delimiter)
 {
     string header;
-    auto size = (column_size + 1)* GetColumnCount(header_line, delimiter);
+    auto size = (column_size + 3) * GetColumnCount(header_line, delimiter);
     for (int i = 0; i < size; i++)
     {
-        if (i % (column_size + 1) != 0)
+        if (i % ((column_size + 3)) != 0)
             header.push_back('-');
         else
             header.push_back('+');
@@ -108,14 +105,14 @@ string GenerateLine(vector<string> line, uint columns, uint column_size)
     string formatted_line("|");
     for (uint i = 0; i < columns; i++)
     {
-        auto space_length = 2 + (column_size - line[i].length());
+        auto space_length = (column_size - line[i].length()) + 2;
         auto j = 0;
-        for (; j < ceil((double)space_length / 2.0); j++)
+        for (; j < (uint)floor((double)space_length / 2.0); j++)
         {
             formatted_line.push_back(' ');
         }
         formatted_line.append(line[i]);
-        for (; j < floor((double)column_size / 2.0); j++)
+        for (j = 0; j < (uint)ceil((double)space_length / 2.0); j++)
         {
             formatted_line.push_back(' ');
         }

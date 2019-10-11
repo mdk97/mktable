@@ -15,7 +15,7 @@ string GenerateLine(vector<string> line, uint columns, uint column_size);
 
 string ReadLineFromFile(file &file_handler);
 file OpenFile(string file_name);
-bool CloseFile(file &file_handler);
+void CloseFile(file &file_handler);
 
 uint GetColumnCount(string header_line, char delimiter);
 vector<string> StringSplit(string str, char delimiter);
