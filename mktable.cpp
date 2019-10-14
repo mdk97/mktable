@@ -5,6 +5,9 @@
 using std::cout;
 using std::endl;
 
+
+std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
 file OpenFile(string file_name)
 {
     file file_handler;
@@ -18,22 +21,24 @@ void CloseFile(file &file_handler)
         file_handler.close();
 }
 
-string ReadLineFromFile(file &file_handler)
+wstring ReadLineFromFile(file &file_handler)
 {
+    wstring s;
     if (not file_handler.is_open())
     {
         throw ("File is not open");
-        return("");
+        s = converter.from_bytes("");
     }
     string line;
     std::getline(file_handler, line);
-    return(line);
+    s = converter.from_bytes(line);
+    return(s);
 }
 
-uint GetColumnCount(string header_line, char delimiter)
+uint GetColumnCount(wstring header_line, wchar_t delimiter)
 {
     uint counter = 1;
-    for (char a : header_line)
+    for (wchar_t a : header_line)
     {
        if (a == delimiter)
            counter++;
@@ -41,12 +46,12 @@ uint GetColumnCount(string header_line, char delimiter)
     return(counter);
 }
 
-vector<string> StringSplit(string str, char delimiter)
+vector<wstring> StringSplit(wstring str, wchar_t delimiter)
 {
     str.push_back(delimiter);
-    string temp("");
-    vector<string> split_string;
-    for (char c : str)
+    wstring temp;
+    vector<wstring> split_string;
+    for (wchar_t c : str)
     {
         if (c != delimiter)
         {
@@ -61,7 +66,7 @@ vector<string> StringSplit(string str, char delimiter)
     return(split_string);
 }
 
-uint GetLongestStringInFile(file &file_handler, char delimiter)
+uint GetLongestStringInFile(file &file_handler, wchar_t delimiter)
 {
     if (not file_handler.is_open())
     {
@@ -72,10 +77,10 @@ uint GetLongestStringInFile(file &file_handler, char delimiter)
     uint longest = 0;
     while (not file_handler.eof())
     {
-        string temp;
+        wstring temp;
         temp = ReadLineFromFile(file_handler);
-        vector<string> line = StringSplit(temp, delimiter);
-        for (string s : line)
+        vector<wstring> line = StringSplit(temp, delimiter);
+        for (wstring s : line)
         {
             if (s.length() > longest)
                 longest = s.length();
@@ -84,9 +89,9 @@ uint GetLongestStringInFile(file &file_handler, char delimiter)
     return(longest);
 }
 
-string GenerateDivision(string header_line, uint column_size, char delimiter)
+wstring GenerateDivision(wstring header_line, uint column_size, wchar_t delimiter)
 {
-    string header;
+    wstring header;
     auto size = (column_size + 3) * GetColumnCount(header_line, delimiter);
     for (int i = 0; i < size; i++)
     {
@@ -100,9 +105,9 @@ string GenerateDivision(string header_line, uint column_size, char delimiter)
     return(header);
 }
 
-string GenerateLine(vector<string> line, uint columns, uint column_size)
+wstring GenerateLine(vector<wstring> line, uint columns, uint column_size)
 {
-    string formatted_line("|");
+    wstring formatted_line = converter.from_bytes("|");
     for (uint i = 0; i < columns; i++)
     {
         auto space_length = (column_size - line[i].length()) + 2;
@@ -121,26 +126,32 @@ string GenerateLine(vector<string> line, uint columns, uint column_size)
     return(formatted_line);
 }
 
-void WriteTable(file &file_handler, char delimiter, uint column_size)
+void WriteTable(file &file_handler, wchar_t delimiter, uint column_size)
 {
-    string line = ReadLineFromFile(file_handler);
-    string division = GenerateDivision(line, column_size, delimiter);
+    wstring line = ReadLineFromFile(file_handler);
+    wstring division = GenerateDivision(line, column_size, delimiter);
     uint columns = GetColumnCount(line, delimiter);
-    vector<string> split_line = StringSplit(line, delimiter);
+    vector<wstring> split_line = StringSplit(line, delimiter);
 
-    print_colored(division, GREEN, BG_DEFAULT);
+    print_colored(converter.to_bytes(division), GREEN, BG_DEFAULT);
     cout << endl;
-    print_colored(GenerateLine(split_line, columns, column_size), GREEN, BG_DEFAULT);
+    print_colored(
+        converter.to_bytes(
+            GenerateLine(split_line, columns, column_size)
+            ), GREEN, BG_DEFAULT);
     cout << endl;
 
     while (true)
     {
-        print_colored(division, CYAN, BG_DEFAULT);
+        print_colored(converter.to_bytes(division), CYAN, BG_DEFAULT);
         cout << endl;
         line = ReadLineFromFile(file_handler);
         if (file_handler.eof())
             return;
-        print_colored(GenerateLine(StringSplit(line, delimiter), columns, column_size), CYAN, BG_DEFAULT);
+        print_colored(
+            converter.to_bytes(
+                GenerateLine(StringSplit(line, delimiter), columns, column_size)
+                ), CYAN, BG_DEFAULT);
         cout << endl;
     }
 }

@@ -1,2 +1,2 @@
 mktable:
-	g++ -g main.cpp mktable.cpp rainbow/C++/rainbow.cpp -o mktable --std=c++11
+	g++ -g main.cpp mktable.cpp rainbow/C++/rainbow.cpp -o mktable --std=c++14

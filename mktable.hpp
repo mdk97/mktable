@@ -5,25 +5,31 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <codecvt>
+#include <locale>
 
-using std::string;
+
+using std::wstring;
 using file = std::fstream;
 using std::vector;
+using std::string;
+using std::wstring;
 
-string GenerateDivision(string header_line, uint column_size, char delimiter);
-string GenerateLine(vector<string> line, uint columns, uint column_size);
 
-string ReadLineFromFile(file &file_handler);
+wstring GenerateDivision(wstring header_line, uint column_size, char delimiter);
+wstring GenerateLine(vector<wstring> line, uint columns, uint column_size);
+
+wstring ReadLineFromFile(file &file_handler);
 file OpenFile(string file_name);
 void CloseFile(file &file_handler);
 
-uint GetColumnCount(string header_line, char delimiter);
-vector<string> StringSplit(string str, char delimiter);
+uint GetColumnCount(wstring header_line, wchar_t delimiter);
+vector<wstring> StringSplit(wstring str, char delimiter);
 
-uint GetLongestStringInFile(file &file_handler, char delimiter);
+uint GetLongestStringInFile(file &file_handler, wchar_t delimiter);
 
 string GetFileNameFromArgv(char *argv[]);
 
-void WriteTable(file &file_handler, char delimiter, uint column_size);
+void WriteTable(file &file_handler, wchar_t delimiter, uint column_size);
 
 #endif

@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         std::cerr << e.what() << '\n';
     }
 
-    uint column_size = GetLongestStringInFile(fh, ';');
+    uint column_size = GetLongestStringInFile(fh, (wchar_t)';');
     CloseFile(fh);
     
     try
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         std::cerr << e.what() << '\n';
     }
 
-    WriteTable(fh, ';', column_size);
+    WriteTable(fh, (wchar_t)';', column_size);
 
     CloseFile(fh);
 }
