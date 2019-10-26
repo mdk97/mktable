@@ -16,7 +16,9 @@ using std::string;
 using std::wstring;
 
 
-wstring GenerateDivision(wstring header_line, uint column_size, char delimiter);
+enum DivisionCategory { HEADER, BODY, FOOTER };
+
+wstring GenerateDivision(wstring header_line, uint column_size, char delimiter, DivisionCategory c);
 wstring GenerateLine(vector<wstring> line, uint columns, uint column_size);
 
 wstring ReadLineFromFile(file &file_handler);

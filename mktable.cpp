@@ -89,25 +89,57 @@ uint GetLongestStringInFile(file &file_handler, wchar_t delimiter)
     return(longest);
 }
 
-wstring GenerateDivision(wstring header_line, uint column_size, wchar_t delimiter)
+wstring GenerateDivision(wstring header_line, uint column_size, wchar_t delimiter, DivisionCategory c)
 {
+    // The string that will be used to build the actual header
     wstring header;
+
+    // Calculating the size of the header (width of the table)
     auto size = (column_size + 3) * GetColumnCount(header_line, delimiter);
+
+
     for (int i = 0; i < size; i++)
     {
-        if (i % ((column_size + 3)) != 0)
-            header.push_back('-');
-        else
-            header.push_back('+');
-
+        if (c == HEADER)
+        {
+            if (i == 0)
+                header.append(converter.from_bytes("┌"));
+            else if (i % (column_size + 3) == 0)
+                header.append(converter.from_bytes("┬"));
+            else
+                header.append(converter.from_bytes("─"));                
+        }
+        else if (c == BODY)
+        {
+            if (i == 0)
+                header.append(converter.from_bytes("├"));
+            else if (i % (column_size + 3) == 0)
+                header.append(converter.from_bytes("┼"));
+            else
+                header.append(converter.from_bytes("─"));
+        }
+        else if (c == FOOTER)
+        {
+            if (i == 0)
+                header.append(converter.from_bytes("└"));
+            else if (i % (column_size + 3) == 0)
+                header.append(converter.from_bytes("┴"));
+            else
+                header.append(converter.from_bytes("─"));
+        }
     }
-    header.push_back('+');
+    if (c == HEADER)
+        header.append(converter.from_bytes("┐"));
+    else if (c == BODY)
+        header.append(converter.from_bytes("┤"));
+    else if (c == FOOTER)
+        header.append(converter.from_bytes("┘"));
     return(header);
 }
 
 wstring GenerateLine(vector<wstring> line, uint columns, uint column_size)
 {
-    wstring formatted_line = converter.from_bytes("|");
+    wstring formatted_line = converter.from_bytes("│");
     for (uint i = 0; i < columns; i++)
     {
         auto space_length = (column_size - line[i].length()) + 2;
@@ -121,19 +153,26 @@ wstring GenerateLine(vector<wstring> line, uint columns, uint column_size)
         {
             formatted_line.push_back(' ');
         }
-        formatted_line.push_back('|');
+        formatted_line.append(converter.from_bytes("│"));
     }
     return(formatted_line);
 }
 
 void WriteTable(file &file_handler, wchar_t delimiter, uint column_size)
 {
+    // Read the header line
     wstring line = ReadLineFromFile(file_handler);
-    wstring division = GenerateDivision(line, column_size, delimiter);
+
+    // Generate the divisions
+    wstring header_division = GenerateDivision(line, column_size, delimiter, DivisionCategory::HEADER);
+    wstring body_division = GenerateDivision(line, column_size, delimiter, DivisionCategory::BODY);
+    wstring footer_division = GenerateDivision(line, column_size, delimiter, DivisionCategory::FOOTER);
+
+    // Get column count
     uint columns = GetColumnCount(line, delimiter);
     vector<wstring> split_line = StringSplit(line, delimiter);
 
-    print_colored(converter.to_bytes(division), GREEN, BG_DEFAULT);
+    print_colored(converter.to_bytes(header_division), GREEN, BG_DEFAULT);
     cout << endl;
     print_colored(
         converter.to_bytes(
@@ -143,15 +182,20 @@ void WriteTable(file &file_handler, wchar_t delimiter, uint column_size)
 
     while (true)
     {
-        print_colored(converter.to_bytes(division), CYAN, BG_DEFAULT);
-        cout << endl;
+        print_colored(converter.to_bytes(body_division), CYAN, BG_DEFAULT);
         line = ReadLineFromFile(file_handler);
         if (file_handler.eof())
+        {
+            cout << "\r";
+            print_colored(converter.to_bytes(footer_division), CYAN, BG_DEFAULT);
+            cout << endl;
             return;
+        }
+        cout << endl;
         print_colored(
             converter.to_bytes(
-                GenerateLine(StringSplit(line, delimiter), columns, column_size)
-                ), CYAN, BG_DEFAULT);
+                GenerateLine(StringSplit(line, delimiter), columns, column_size)), 
+                                CYAN, BG_DEFAULT);
         cout << endl;
     }
 }
