@@ -71,7 +71,7 @@ For this file, mktable will generate the following table:
 ```
 
 ## Important Notes
-I use the [Rainbow](https://github.com/mdk97/Rainbow) repository to print colored text with the tables, so don't forget to `git submodule update --init` after cloning the repository.
+I use the [Rainbow](https://github.com/mdk97/Rainbow) library to print colored text, so don't forget to `git submodule update --init` after cloning this repository.
 
 ## Building the project
 You just need to execute `make` to compile the source code, which will generate the `mktable` executable.
